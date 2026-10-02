@@ -1,0 +1,8 @@
+{
+  "name": "INKLOP - Votación de Creadores",
+  "description": "Formulario oficial de votación para apoyar a tu creador favorito en INKLOP. Vota y participa para asistir con tu creador si gana.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
