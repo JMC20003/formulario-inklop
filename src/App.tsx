@@ -20,6 +20,7 @@ interface StoredVote {
   fullName: string;
   email: string;
   creatorId: string;
+  interest: string;
   attendWithCreator: boolean;
   timestamp: string;
   voteCode: string;
@@ -85,6 +86,7 @@ export default function App() {
         fullName: formData.fullName.trim(),
         email: emailLower,
         creatorId: formData.creatorId,
+        interest: formData.interest,
         attendWithCreator: formData.attendWithCreator,
         timestamp: new Date().toISOString(),
         voteCode,

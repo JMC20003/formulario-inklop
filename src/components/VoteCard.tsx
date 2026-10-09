@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Globe, Star, AlertCircle } from 'lucide-react';
+import { Globe, Star, AlertCircle, Palette, Gamepad2, Dumbbell, Wifi, Check } from 'lucide-react';
 import { InklopLogo } from './InklopLogo';
 import { CreatorSelector } from './CreatorSelector';
 import { Creator } from '../data/creators';
@@ -8,9 +8,23 @@ export interface VoteFormData {
   fullName: string;
   email: string;
   creatorId: string;
+  interest: string;
   attendWithCreator: boolean;
   termsAccepted: boolean;
 }
+
+export interface InterestOption {
+  id: string;
+  label: string;
+  icon: React.ComponentType<{ className?: string }>;
+}
+
+export const INTEREST_OPTIONS: InterestOption[] = [
+  { id: 'maquillaje', label: 'Maquillaje', icon: Palette },
+  { id: 'gamming', label: 'Gamming', icon: Gamepad2 },
+  { id: 'gym-fitness', label: 'Gym & Fitnes', icon: Dumbbell },
+  { id: 'inconnect', label: 'Inconnect', icon: Wifi },
+];
 
 interface VoteCardProps {
   creators: Creator[];
@@ -27,6 +41,7 @@ export const VoteCard: React.FC<VoteCardProps> = ({
     fullName: '',
     email: '',
     creatorId: '',
+    interest: '',
     attendWithCreator: true,
     termsAccepted: false,
   });
@@ -35,6 +50,7 @@ export const VoteCard: React.FC<VoteCardProps> = ({
     fullName?: string;
     email?: string;
     creatorId?: string;
+    interest?: string;
     termsAccepted?: string;
   }>({});
 
@@ -60,6 +76,10 @@ export const VoteCard: React.FC<VoteCardProps> = ({
 
     if (!formData.creatorId) {
       newErrors.creatorId = 'Selecciona un creador para emitir tu voto.';
+    }
+
+    if (!formData.interest) {
+      newErrors.interest = 'Selecciona tu área de interés.';
     }
 
     if (!formData.termsAccepted) {
@@ -194,7 +214,65 @@ export const VoteCard: React.FC<VoteCardProps> = ({
             )}
           </div>
 
-          {/* Field 4: ¿Quieres asistir con tu creador si gana? */}
+          {/* Field 4: Área de interés (selección única) */}
+          <div>
+            <label className="block text-xs sm:text-sm font-bold text-gray-900 mb-1.5">
+              Selecciona tu área de interés
+            </label>
+            <div className="grid grid-cols-2 gap-2">
+              {INTEREST_OPTIONS.map((option) => {
+                const Icon = option.icon;
+                const isSelected = formData.interest === option.id;
+                return (
+                  <button
+                    key={option.id}
+                    type="button"
+                    onClick={() => {
+                      setFormData({ ...formData, interest: option.id });
+                      if (errors.interest) setErrors({ ...errors, interest: undefined });
+                    }}
+                    aria-pressed={isSelected}
+                    className={`flex items-center gap-2 px-3 py-2.5 rounded-2xl border text-left transition-all cursor-pointer active:scale-[0.98] ${
+                      isSelected
+                        ? 'border-[#8A16F5] bg-purple-50/70 ring-1 ring-purple-200'
+                        : errors.interest
+                        ? 'border-red-300 bg-white hover:border-gray-400'
+                        : 'border-gray-200 bg-white hover:border-gray-300'
+                    }`}
+                  >
+                    <div
+                      className={`w-5 h-5 rounded-md border-2 flex items-center justify-center flex-shrink-0 transition-all ${
+                        isSelected
+                          ? 'bg-[#8A16F5] border-[#8A16F5]'
+                          : 'border-gray-300 bg-white'
+                      }`}
+                    >
+                      {isSelected && <Check className="w-3.5 h-3.5 text-white stroke-[3.5]" />}
+                    </div>
+                    <Icon
+                      className={`w-4 h-4 flex-shrink-0 ${
+                        isSelected ? 'text-[#8A16F5]' : 'text-gray-500'
+                      }`}
+                    />
+                    <span
+                      className={`text-xs font-bold truncate ${
+                        isSelected ? 'text-gray-950' : 'text-gray-600'
+                      }`}
+                    >
+                      {option.label}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+            {errors.interest && (
+              <p className="mt-1 text-xs text-red-500 font-semibold flex items-center gap-1">
+                <AlertCircle className="w-3.5 h-3.5" /> {errors.interest}
+              </p>
+            )}
+          </div>
+
+          {/* Field 5: ¿Quieres asistir con tu creador si gana? */}
           <div>
             <label className="block text-xs sm:text-sm font-bold text-gray-900 mb-1.5">
               ¿Quieres asistir con tu creador si gana?
@@ -253,7 +331,7 @@ export const VoteCard: React.FC<VoteCardProps> = ({
             </div>
           </div>
 
-          {/* Field 5: Checkbox "Acepto que solo se me permite 1 voto por persona" */}
+          {/* Field 6: Checkbox "Acepto que solo se me permite 1 voto por persona" */}
           <div className="pt-1">
             <label className="flex items-start gap-3 cursor-pointer select-none group">
               <div className="relative flex items-center mt-0.5">
@@ -302,7 +380,7 @@ export const VoteCard: React.FC<VoteCardProps> = ({
             )}
           </div>
 
-          {/* Field 6: ENVIAR VOTO button with decorative rays */}
+          {/* Field 7: ENVIAR VOTO button with decorative rays */}
           <div className="relative pt-3">
             {/* Sparkle decorative lines around button matching screenshot */}
             <div className="absolute -top-1 -right-1 w-3 h-1 bg-[#D946EF] rounded-full rotate-45 pointer-events-none" />
